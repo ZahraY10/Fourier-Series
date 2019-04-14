@@ -6,19 +6,21 @@ plt.style.use("ggplot")
 # Setup
 x_ = np.linspace(-20,20,10000)
 
-T = 8
+T = 4
 #for a more accurate wave approximation increase armonics (number of haronics)
-armonics = 100
+armonics = 10
 
 
 def triangleWave(x):
     global T
-    return ((4 / T) * (x - (T / 2) * np.math.floor((2 * x) / T + 0.5)) * (-1 ** np.math.floor((2 * x) / T + 0.5)))
+    return np.abs(x % 4 -2) - 1
 
 
-def integrate(f, a, b, N):
+def integrate(f, a, b, N, n):
     x = np.linspace(a, b, N)
-    fx = f(x)
+    fx = f(x, n)
+   # for i in fx:
+    #    print("i = " + str(i))
     area = np.sum(fx)*(b-a)/N
     return area
 
@@ -30,11 +32,11 @@ def func2(x, n):
 
 # An coefficients
 def an(n):
-    return (2 / T) * integrate(func1, -1 * T / 2, T / 2, 10000)
-
+    return (2 / T) * integrate(func1, -1 * T / 2, T / 2, 10000, n)
+2
 # Bn coefficients
 def bn(n):
-    return (2 / T) * integrate(func2, -1 * T / 2, T / 2, 10000)
+    return (2 / T) * integrate(func2, -1 * T / 2, T / 2, 10000, n)
 
 
 # Wn
@@ -58,6 +60,7 @@ def fourierSeries(n_max,x):
 
 y = []
 f = []
+
 for i in x_:
     y.append(triangleWave(i))
     f.append(fourierSeries(armonics,i))
@@ -68,3 +71,4 @@ plt.plot(x_,f,color="red",label="Fourier series approximation")
 plt.title("Fourier Series approximation number of harmonics: "+ str(armonics))
 plt.legend()
 plt.show()
+
